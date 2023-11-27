@@ -5,12 +5,43 @@ import wikipedia
 import webbrowser
 import os
 import smtplib
+import random
+from openai import OpenAI
+from config import apikey
 
 
 engine = pyttsx3.init('sapi5')
 voice = engine.getProperty('voices')
 # print(voice[1].id)
 engine.setProperty('voice', voice[1].id)
+
+
+def ai(prompt):
+    client = OpenAI(
+        api_key=apikey
+    )
+
+    response = client.completions.create(
+        model="davinci-002",
+        prompt=prompt,
+        temperature=1,
+        max_tokens=50,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    print(response["choices"][0]["text"])
+    text += response["choice"][0]["text"]
+    if os.path.exits("Openai"):
+        os.mkdir("openai")
+
+    with open(f"openai/prompt- {random.randint(1, 99999999)}", "w") as f:
+        f.write(text)
+
+
+def say(text):
+    os.system(f'say "{text}')
 
 
 def speak(audio):
@@ -106,3 +137,8 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 speak('Got a problem sir, Please retry the process')
+
+    # Adding openAI in openaitest.py
+    # source OPENAI using APIKEY
+        if "using ai".lower() in query.lower():
+            ai(prompt=query)
